@@ -7,6 +7,11 @@
     <title>Brienz/Brinzauls Landslide Monitor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Leaflet Map CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <style>
         body {
             background-color: #0f172a; /* Slate 900 */
@@ -65,6 +70,14 @@
             background-color: #475569;
             color: #fff;
         }
+        /* Map specific styles */
+        #map {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            border-radius: 0.5rem;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -92,26 +105,7 @@
         <!-- Webcam Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
             
-            <!-- Cam 1: YouTube -->
-            <div class="space-y-2">
-                <div class="flex justify-between items-center px-1">
-                    <h2 class="text-sm font-semibold text-slate-300 flex items-center">
-                        <span class="status-dot status-live"></span> CAM 1: Livekamera Brienz GR
-                    </h2>
-                    <a href="https://www.youtube.com/watch?v=7mVIGuljfjk" target="_blank" class="btn-external">Open in YouTube ↗</a>
-                </div>
-                <div class="cam-container border border-slate-700">
-                    <iframe 
-                        src="https://www.youtube-nocookie.com/embed/7mVIGuljfjk?autoplay=1&mute=1&rel=0" 
-                        title="Brienz Cam 1"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        referrerpolicy="strict-origin-when-cross-origin" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-
-            <!-- Cam 2: YouTube -->
+            <!-- Cam 2: YouTube (Moved to first slot) -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h2 class="text-sm font-semibold text-slate-300 flex items-center">
@@ -131,7 +125,7 @@
             </div>
 
             <!-- Cam 3: SRF -->
-            <div class="space-y-2 lg:col-span-2 xl:col-span-1">
+            <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h2 class="text-sm font-semibold text-slate-300 flex items-center">
                         <span class="status-dot status-live"></span> CAM 3: SRF Livestream
@@ -147,8 +141,25 @@
                 </div>
             </div>
 
+            <!-- Map Panel -->
+            <div class="glass-panel rounded-lg p-4 border border-slate-700 h-full flex flex-col">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 01-.553-.894L15 7m0 13V7m0 0L9 7" />
+                        </svg>
+                        Situation Map
+                    </h2>
+                </div>
+                <div id="map" class="border border-slate-600"></div>
+                <div class="mt-2 flex gap-4 text-xs">
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-500 opacity-50 border border-red-500"></span> Active Slide Area (Approx)</div>
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500 opacity-50 border border-blue-500"></span> Village Center</div>
+                </div>
+            </div>
+
             <!-- Weather Dashboard -->
-            <div class="glass-panel rounded-lg p-6 lg:col-span-2 xl:col-span-1 flex flex-col justify-between border border-slate-700">
+            <div class="glass-panel rounded-lg p-6 flex flex-col justify-between border border-slate-700">
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <h2 class="text-lg font-bold text-white flex items-center gap-2">
@@ -217,8 +228,37 @@
         setInterval(updateClock, 1000);
         updateClock();
 
+        // --- Map Initialization (Leaflet) ---
+        const map = L.map('map').setView([46.67, 9.60], 14);
+
+        // Esri World Imagery (Satellite/Orthophoto)
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        }).addTo(map);
+
+        // Approximate locations based on geography
+        const brienzCenter = [46.6686, 9.5955];
+        // Moved slideArea slightly West (from 9.60 to 9.596) to correct location relative to village
+        const slideArea = [46.6755, 9.594]; 
+
+
+        // Village Marker
+        const villageCircle = L.circle(brienzCenter, {
+            color: '#3b82f6',
+            fillColor: '#3b82f6',
+            fillOpacity: 0.4,
+            radius: 150
+        }).addTo(map).bindPopup("Brienz/Brinzauls (Village)");
+
+        // Danger Zone (Approximate visual representation of the "Island")
+        const dangerCircle = L.circle(slideArea, {
+            color: '#ef4444',
+            fillColor: '#ef4444',
+            fillOpacity: 0.4,
+            radius: 400
+        }).addTo(map).bindPopup("Active Slide Area (Approximate)");
+
         // --- Weather Functionality ---
-        // Coordinates for Brienz/Brinzauls
         const LAT = 46.6686;
         const LON = 9.5955;
         
@@ -236,10 +276,8 @@
         }
 
         function updateCurrentWeather(current) {
-            // Temperature
             document.getElementById('current-temp').textContent = `${current.temperature_2m}°C`;
             
-            // Weather Description (Code to Text)
             const code = current.weather_code;
             let desc = "Clear";
             if (code > 0 && code <= 3) desc = "Partly Cloudy";
@@ -249,14 +287,10 @@
             if (code >= 80 && code <= 99) desc = "Showers/Storm";
             document.getElementById('weather-desc').textContent = desc;
 
-            // Stats
             document.getElementById('precip').textContent = `${current.precipitation} mm`;
             document.getElementById('wind').textContent = `${current.wind_speed_10m} km/h`;
             document.getElementById('wind-dir').textContent = `${getWindDirection(current.wind_direction_10m)}`;
             document.getElementById('humidity').textContent = `${current.relative_humidity_2m}%`;
-            
-            // Note: Freezing level is hourly, so we'll grab the current hour's index roughly
-            // This is handled in the chart update or we could fetch the nearest hour here.
         }
 
         function getWindDirection(degrees) {
@@ -268,17 +302,14 @@
         let weatherChart = null;
 
         function updateChart(hourly) {
-            // Get next 24 hours from current time
             const now = new Date();
             const currentHour = now.getHours();
             
-            // Slice data for display (next 12 hours)
             const labels = hourly.time.slice(currentHour, currentHour + 12).map(t => {
                 return new Date(t).getHours() + ':00';
             });
             const precipData = hourly.precipitation.slice(currentHour, currentHour + 12);
             
-            // Update Freezing Level Text (take current hour)
             const currentFreezingLevel = hourly.freezing_level_height[currentHour];
             document.getElementById('freezing-level').textContent = `${Math.round(currentFreezingLevel)} m`;
 
@@ -295,7 +326,7 @@
                     datasets: [{
                         label: 'Precipitation Forecast (mm)',
                         data: precipData,
-                        backgroundColor: 'rgba(56, 189, 248, 0.6)', // Sky blue
+                        backgroundColor: 'rgba(56, 189, 248, 0.6)',
                         borderColor: 'rgba(56, 189, 248, 1)',
                         borderWidth: 1
                     }]
@@ -330,9 +361,8 @@
             });
         }
 
-        // Initial fetch and interval
         fetchWeather();
-        setInterval(fetchWeather, 600000); // Update every 10 mins
+        setInterval(fetchWeather, 600000); 
     </script>
 </body>
 </html>
