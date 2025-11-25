@@ -109,7 +109,7 @@
             <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h2 class="text-sm font-semibold text-slate-300 flex items-center">
-                        <span class="status-dot status-live"></span> CAM 1: Live Kamera Berg
+                        <span class="status-dot status-live"></span> CAM 1: Live Kamera Berg (Gemeinde Albula/ Alvra)
                     </h2>
                     <a href="https://www.youtube.com/watch?v=YSlMTkpyEbw" target="_blank" class="btn-external">Open in YouTube ↗</a>
                 </div>
@@ -141,20 +141,30 @@
                 </div>
             </div>
 
-            <!-- Map Panel -->
-            <div class="glass-panel rounded-lg p-4 border border-slate-700 h-full flex flex-col">
-                <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 01-.553-.894L15 7m0 13V7m0 0L9 7" />
-                        </svg>
-                        Overview Map
+            <!-- Cam 3: YouTube -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center px-1">
+                    <h2 class="text-sm font-semibold text-slate-300 flex items-center">
+                        <span class="status-dot status-live"></span> CAM 3: Night cam Brienz (BRK News)
                     </h2>
+                    <a href="https://www.youtube.com/watch?v=7mVIGuljfjk" target="_blank" class="btn-external">Open in YouTube ↗</a>
                 </div>
-                <div id="map" class="border border-slate-600"></div>
-                <div class="mt-2 flex gap-4 text-xs">
-                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-500 opacity-50 border border-red-500"></span> Active Slide Area (Approx)</div>
-                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500 opacity-50 border border-blue-500"></span> Village Center</div>
+                <div class="cam-container border border-slate-700 relative bg-slate-900">
+                    <a href="https://www.youtube.com/watch?v=7mVIGuljfjk" target="_blank" class="absolute inset-0 flex flex-col items-center justify-center group text-decoration-none">
+                        <!-- Background Image (Thumbnail) -->
+                        <img src="https://img.youtube.com/vi/7mVIGuljfjk/hqdefault.jpg" alt="Live Stream Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity">
+                        
+                        <!-- Play Button Overlay -->
+                        <div class="z-10 flex flex-col items-center">
+                            <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:bg-red-700 transition-colors mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white ml-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                            </div>
+                            <span class="text-white font-semibold shadow-black drop-shadow-md">Watch on YouTube</span>
+                            <span class="text-xs text-slate-300 mt-1 bg-black/50 px-2 py-0.5 rounded">Sadly the Playback is disabled on other sites :(</span>
+                        </div>
+                    </a>
                 </div>
             </div>
 
@@ -207,6 +217,23 @@
                 </div>
                 <div class="mt-2 text-right">
                     <p class="text-[10px] text-slate-600">Data source: Open-Meteo (Swiss High Resolution Models)</p>
+                </div>
+            </div>
+
+            <!-- Map Panel -->
+            <div class="glass-panel rounded-lg p-4 border border-slate-700 h-full flex flex-col">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 01-.553-.894L15 7m0 13V7m0 0L9 7" />
+                        </svg>
+                        Overview Map
+                    </h2>
+                </div>
+                <div id="map" class="border border-slate-600"></div>
+                <div class="mt-2 flex gap-4 text-xs">
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-500 opacity-50 border border-red-500"></span> Active Slide Area (Approx)</div>
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500 opacity-50 border border-blue-500"></span> Village Center</div>
                 </div>
             </div>
 
