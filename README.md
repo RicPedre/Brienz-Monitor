@@ -1,27 +1,12 @@
 # Brienz/Brinzauls Landslide Monitor
 
-A real-time monitoring dashboard for the Brienz/Brinzauls landslide area. This web application provides a centralized view of critical data, including live camera feeds, geographical information, and sensor data visualizations.
-
-## Features
-
-- **Live Monitoring**: Integration with live camera feeds to visually monitor the area.
-- **Interactive Map**: detailed map view powered by [Leaflet.js](https://leafletjs.com/) for geographical context.
-- **Data Visualization**: Charts and graphs using [Chart.js](https://www.chartjs.org/) to display sensor data (e.g., weather, movement).
-- **Modern UI**: A responsive, dark-themed interface built with [Tailwind CSS](https://tailwindcss.com/).
-- **Real-time Info**: Live clock and status indicators.
-
-## Technologies Used
-
-- **HTML5 & JavaScript**: Core structure and logic.
-- **Tailwind CSS**: For styling and responsive design (via CDN).
-- **Leaflet.js**: For interactive maps (via CDN).
-- **Chart.js**: For data visualization (via CDN).
+A very fast, vibe coded website for monitoring the evolution of the Brienz/Brinzauls Landslide evolution
 
 ## Getting Started
 
-Since this is a static web page, no build process is required.
+It's a webpage, click the link!
 
-The webiste is avaialble hosted by github at: [https://ricpedre.github.io/Brienz-Monitor/]
+[https://ricpedre.github.io/Brienz-Monitor/]
 
 ## License
 
