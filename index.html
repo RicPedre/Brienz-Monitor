@@ -148,7 +148,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0121 18.382V7.618a1 1 0 01-.553-.894L15 7m0 13V7m0 0L9 7" />
                         </svg>
-                        Situation Map
+                        Overview Map
                     </h2>
                 </div>
                 <div id="map" class="border border-slate-600"></div>
@@ -168,7 +168,8 @@
                             </svg>
                             Live Weather
                         </h2>
-                        <p class="text-xs text-slate-400 mt-1">Location: Brienz/Brinzauls (1,144m)</p>
+                        <p class="text-xs text-slate-400 mt-1">Brienz/Brinzauls: 1,141 m</p>
+                        <p class="text-xs text-slate-400">Top of Slide: 1,817 m</p>
                     </div>
                     <div class="text-right">
                         <div id="current-temp" class="text-4xl font-mono font-bold text-white">--°C</div>
@@ -231,9 +232,10 @@
         // --- Map Initialization (Leaflet) ---
         const map = L.map('map').setView([46.67, 9.60], 14);
 
-        // Esri World Imagery (Satellite/Orthophoto)
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        // OPTION: Google Maps Satellite (No Roads)
+        L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }).addTo(map);
 
         // Approximate locations based on geography
