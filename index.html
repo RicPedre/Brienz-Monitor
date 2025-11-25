@@ -105,18 +105,18 @@
         <!-- Webcam Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
             
-            <!-- Cam 2: YouTube (Moved to first slot) -->
+            <!-- Cam 1: YouTube (Moved to first slot) -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h2 class="text-sm font-semibold text-slate-300 flex items-center">
-                        <span class="status-dot status-live"></span> CAM 2: Live Kamera Berg
+                        <span class="status-dot status-live"></span> CAM 1: Live Kamera Berg
                     </h2>
                     <a href="https://www.youtube.com/watch?v=YSlMTkpyEbw" target="_blank" class="btn-external">Open in YouTube ↗</a>
                 </div>
                 <div class="cam-container border border-slate-700">
                     <iframe 
                         src="https://www.youtube-nocookie.com/embed/YSlMTkpyEbw?autoplay=1&mute=1&rel=0" 
-                        title="Brienz Cam 2"
+                        title="Brienz Cam 1"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                         referrerpolicy="strict-origin-when-cross-origin" 
                         allowfullscreen>
@@ -124,11 +124,11 @@
                 </div>
             </div>
 
-            <!-- Cam 3: SRF -->
+            <!-- Cam 2: SRF -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h2 class="text-sm font-semibold text-slate-300 flex items-center">
-                        <span class="status-dot status-live"></span> CAM 3: SRF Livestream
+                        <span class="status-dot status-live"></span> CAM 2: SRF Livestream
                     </h2>
                     <a href="https://www.srf.ch/play/embed?urn=urn:srf:scheduled_livestream:video:0d53fa28-62f1-4d98-b3f6-f422981279cd" target="_blank" class="btn-external">Open Source ↗</a>
                 </div>
@@ -264,7 +264,8 @@
         
         async function fetchWeather() {
             try {
-                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,precipitation,rain,weather_code,wind_speed_10m,wind_direction_10m&hourly=precipitation,freezing_level_height&timezone=Europe%2FBerlin&forecast_days=1`);
+                // Added temperature_2m to hourly params
+                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,precipitation,rain,weather_code,wind_speed_10m,wind_direction_10m&hourly=precipitation,freezing_level_height,temperature_2m&timezone=Europe%2FBerlin&forecast_days=1`);
                 const data = await response.json();
                 
                 updateCurrentWeather(data.current);
@@ -309,6 +310,7 @@
                 return new Date(t).getHours() + ':00';
             });
             const precipData = hourly.precipitation.slice(currentHour, currentHour + 12);
+            const tempData = hourly.temperature_2m.slice(currentHour, currentHour + 12);
             
             const currentFreezingLevel = hourly.freezing_level_height[currentHour];
             document.getElementById('freezing-level').textContent = `${Math.round(currentFreezingLevel)} m`;
@@ -323,19 +325,42 @@
                 type: 'bar',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: 'Precipitation Forecast (mm)',
-                        data: precipData,
-                        backgroundColor: 'rgba(56, 189, 248, 0.6)',
-                        borderColor: 'rgba(56, 189, 248, 1)',
-                        borderWidth: 1
-                    }]
+                    datasets: [
+                        {
+                            label: 'Precipitation (mm)',
+                            data: precipData,
+                            backgroundColor: 'rgba(56, 189, 248, 0.5)',
+                            borderColor: 'rgba(56, 189, 248, 1)',
+                            borderWidth: 1,
+                            yAxisID: 'y',
+                            order: 2
+                        },
+                        {
+                            label: 'Temp (°C)',
+                            data: tempData,
+                            type: 'line',
+                            borderColor: 'rgba(251, 146, 60, 1)', // Orange-400
+                            backgroundColor: 'rgba(251, 146, 60, 0.2)',
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            tension: 0.4,
+                            yAxisID: 'y1',
+                            order: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     plugins: {
-                        legend: { display: false },
+                        legend: { 
+                            display: true,
+                            labels: { color: '#94a3b8', font: { size: 9 }, boxWidth: 10 }
+                        },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
@@ -348,13 +373,24 @@
                     },
                     scales: {
                         y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
                             beginAtZero: true,
                             grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            ticks: { color: '#94a3b8', font: { size: 10 } }
+                            ticks: { color: '#38bdf8', font: { size: 9 } },
+                            title: { display: false }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            ticks: { color: '#fb923c', font: { size: 9 } }
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#94a3b8', font: { size: 10 } }
+                            ticks: { color: '#94a3b8', font: { size: 9 } }
                         }
                     }
                 }
