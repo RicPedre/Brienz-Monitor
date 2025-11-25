@@ -21,15 +21,7 @@ A real-time monitoring dashboard for the Brienz/Brinzauls landslide area. This w
 
 Since this is a static web page, no build process is required.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/RicPedre/Brienz-Monitor.git
-   ```
-2. Navigate to the project folder:
-   ```bash
-   cd Brienz-Monitor
-   ```
-3. Open `index.html` in your preferred web browser.
+The webiste is avaialble hosted by github at: [https://ricpedre.github.io/Brienz-Monitor/]
 
 ## License
 
